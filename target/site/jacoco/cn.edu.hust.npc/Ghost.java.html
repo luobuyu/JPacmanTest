@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Ghost.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jpacman-framework</a> &gt; <a href="index.source.html" class="el_package">cn.edu.hust.npc</a> &gt; <span class="el_source">Ghost.java</span></div><h1>Ghost.java</h1><pre class="source lang-java linenums">package cn.edu.hust.npc;
+
+import cn.edu.hust.board.Direction;
+import cn.edu.hust.board.Square;
+import cn.edu.hust.board.Unit;
+import cn.edu.hust.sprite.Sprite;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Random;
+
+/**
+ * A non-player unit.
+ *
+ * @author Jeroen Roosen
+ */
+public abstract class Ghost extends Unit {
+    /**
+     * The sprite map, one sprite for each direction.
+     */
+    private final Map&lt;Direction, Sprite&gt; sprites;
+
+    /**
+     * The base move interval of the ghost.
+     */
+    private final int moveInterval;
+
+    /**
+     * The random variation added to the {@link #moveInterval}.
+     */
+    private final int intervalVariation;
+
+    /**
+     * Calculates the next move for this unit and returns the direction to move
+     * in.
+     * &lt;p&gt;
+     * Precondition: The NPC occupies a square (hasSquare() holds).
+     *
+     * @return The direction to move in, or &lt;code&gt;null&lt;/code&gt; if no move could
+     * be devised.
+     */
+    public Direction nextMove() {
+<span class="fc" id="L45">        return nextAiMove().orElseGet(this::randomMove);</span>
+    }
+
+    /**
+     * Tries to calculate a move based on the behaviour of the npc.
+     *
+     * @return an optional containing the move or empty if the current state of the game
+     * makes the ai move impossible
+     */
+    public abstract Optional&lt;Direction&gt; nextAiMove();
+
+    /**
+     * Creates a new ghost.
+     *
+     * @param spriteMap         The sprites for every direction.
+     * @param moveInterval      The base interval of movement.
+     * @param intervalVariation The variation of the interval.
+     */
+<span class="fc" id="L63">    protected Ghost(Map&lt;Direction, Sprite&gt; spriteMap, int moveInterval, int intervalVariation) {</span>
+<span class="fc" id="L64">        this.sprites = spriteMap;</span>
+<span class="fc" id="L65">        this.intervalVariation = intervalVariation;</span>
+<span class="fc" id="L66">        this.moveInterval = moveInterval;</span>
+<span class="fc" id="L67">    }</span>
+
+    @Override
+    public Sprite getSprite() {
+<span class="fc" id="L71">        return sprites.get(getDirection());</span>
+    }
+
+    /**
+     * The time that should be taken between moves.
+     *
+     * @return The suggested delay between moves in milliseconds.
+     */
+    public long getInterval() {
+<span class="fc" id="L80">        return this.moveInterval + new Random().nextInt(this.intervalVariation);</span>
+    }
+
+    /**
+     * Determines a possible move in a random direction.
+     *
+     * @return A direction in which the ghost can move, or &lt;code&gt;null&lt;/code&gt; if
+     * the ghost is shut in by inaccessible squares.
+     */
+    protected Direction randomMove() {
+<span class="fc" id="L90">        Square square = getSquare();</span>
+<span class="fc" id="L91">        List&lt;Direction&gt; directions = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">        for (Direction direction : Direction.values()) {</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">            if (square.getSquareAt(direction).isAccessibleTo(this)) {</span>
+<span class="fc" id="L94">                directions.add(direction);</span>
+            }
+        }
+<span class="pc bpc" id="L97" title="1 of 2 branches missed.">        if (directions.isEmpty()) {</span>
+<span class="nc" id="L98">            return null;</span>
+        }
+<span class="fc" id="L100">        int i = new Random().nextInt(directions.size());</span>
+<span class="fc" id="L101">        return directions.get(i);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

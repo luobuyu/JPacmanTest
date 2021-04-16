@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: cn.edu.hust.e2e.framework.startup.StartupTest
+-------------------------------------------------------------------------------
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 4, Time elapsed: 0.016 sec - in cn.edu.hust.e2e.framework.startup.StartupTest

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameFactory.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jpacman-framework</a> &gt; <a href="index.source.html" class="el_package">cn.edu.hust.game</a> &gt; <span class="el_source">GameFactory.java</span></div><h1>GameFactory.java</h1><pre class="source lang-java linenums">package cn.edu.hust.game;
+
+import cn.edu.hust.level.Level;
+import cn.edu.hust.level.PlayerFactory;
+
+/**
+ * Factory that provides Game objects.
+ *
+ * @author Jeroen Roosen 
+ */
+public class GameFactory {
+
+    /**
+     * The factory providing the player objects.
+     */
+    private final PlayerFactory playerFactory;
+
+    /**
+     * Creates a new game factory.
+     *
+     * @param playerFactory
+     *            The factory providing the player objects.
+     */
+<span class="fc" id="L24">    public GameFactory(PlayerFactory playerFactory) {</span>
+<span class="fc" id="L25">        this.playerFactory = playerFactory;</span>
+<span class="fc" id="L26">    }</span>
+
+    /**
+     * Creates a game for a single level with one player.
+     *
+     * @param level
+     *            The level to create a game for.
+     * @return A new single player game.
+     */
+    public Game createSinglePlayerGame(Level level) {
+<span class="fc" id="L36">        return new SinglePlayerGame(playerFactory.createPacMan(), level);</span>
+    }
+
+    /**
+     * Returns the player factory associated with this game factory.
+     *
+     * @return The player factory associated with this game factory.
+     */
+    protected PlayerFactory getPlayerFactory() {
+<span class="nc" id="L45">        return playerFactory;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

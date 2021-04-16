@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Unit.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jpacman-framework</a> &gt; <a href="index.source.html" class="el_package">cn.edu.hust.board</a> &gt; <span class="el_source">Unit.java</span></div><h1>Unit.java</h1><pre class="source lang-java linenums">package cn.edu.hust.board;
+
+import cn.edu.hust.sprite.Sprite;
+
+/**
+ * A unit that can be placed on a {@link Square}.
+ *
+ * @author Jeroen Roosen 
+ */
+<span class="pc bpc" id="L10" title="1 of 2 branches missed.">public abstract class Unit {</span>
+
+    /**
+     * The square this unit is currently occupying.
+     */
+    private Square square;
+
+    /**
+     * The direction this unit is facing.
+     */
+    private Direction direction;
+
+    /**
+     * Creates a unit that is facing east.
+     */
+<span class="fc" id="L25">    protected Unit() {</span>
+<span class="fc" id="L26">        this.direction = Direction.EAST;</span>
+<span class="fc" id="L27">    }</span>
+
+    /**
+     * Sets this unit to face the new direction.
+     * @param newDirection The new direction this unit is facing.
+     */
+    public void setDirection(Direction newDirection) {
+<span class="fc" id="L34">        this.direction = newDirection;</span>
+<span class="fc" id="L35">    }</span>
+
+    /**
+     * Returns the current direction this unit is facing.
+     * @return The current direction this unit is facing.
+     */
+    public Direction getDirection() {
+<span class="fc" id="L42">        return this.direction;</span>
+    }
+
+    /**
+     * Returns the square this unit is currently occupying.
+     * Precondition: &lt;code&gt;hasSquare()&lt;/code&gt;.
+     *
+     * @return The square this unit is currently occupying.
+     */
+    public Square getSquare() {
+<span class="pc bpc" id="L52" title="2 of 4 branches missed.">        assert invariant();</span>
+<span class="pc bpc" id="L53" title="2 of 4 branches missed.">        assert square != null;</span>
+<span class="fc" id="L54">        return square;</span>
+    }
+
+    /**
+     * Returns whether this unit is currently on  a square.
+     *
+     * @return True iff the unit is occupying a square at the moment.
+     */
+    public boolean hasSquare() {
+<span class="fc bfc" id="L63" title="All 2 branches covered.">        return square != null;</span>
+    }
+
+    /**
+     * Occupies the target square iff this unit is allowed to as decided by
+     * {@link Square#isAccessibleTo(Unit)}.
+     *
+     * @param target
+     *            The square to occupy.
+     */
+    public void occupy(Square target) {
+<span class="pc bpc" id="L74" title="2 of 4 branches missed.">        assert target != null;</span>
+
+<span class="fc bfc" id="L76" title="All 2 branches covered.">        if (square != null) {</span>
+<span class="fc" id="L77">            square.remove(this);</span>
+        }
+<span class="fc" id="L79">        square = target;</span>
+<span class="fc" id="L80">        target.put(this);</span>
+<span class="pc bpc" id="L81" title="2 of 4 branches missed.">        assert invariant();</span>
+<span class="fc" id="L82">    }</span>
+
+    /**
+     * Leaves the currently occupying square, thus removing this unit from the board.
+     */
+    public void leaveSquare() {
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">        if (square != null) {</span>
+<span class="fc" id="L89">            square.remove(this);</span>
+<span class="fc" id="L90">            square = null;</span>
+        }
+<span class="pc bpc" id="L92" title="2 of 4 branches missed.">        assert invariant();</span>
+<span class="fc" id="L93">    }</span>
+
+    /**
+     * Tests whether the square this unit is occupying has this unit listed as
+     * one of its occupiers.
+     *
+     * @return &lt;code&gt;true&lt;/code&gt; if the square this unit is occupying has this
+     *         unit listed as one of its occupiers, or if this unit is currently
+     *         not occupying any square.
+     */
+    protected boolean invariant() {
+<span class="pc bpc" id="L104" title="1 of 4 branches missed.">        return square == null || square.getOccupants().contains(this);</span>
+    }
+
+    /**
+     * Returns the sprite of this unit.
+     *
+     * @return The sprite of this unit.
+     */
+    public abstract Sprite getSprite();
+
+    /**
+     * A utility method for implementing the ghost AI.
+     *
+     * @param amountToLookAhead the amount of squares to follow this units direction in.
+     * @return The square amountToLookAhead spaces in front of this unit.
+     */
+    public Square squaresAheadOf(int amountToLookAhead) {
+<span class="fc" id="L121">        Direction targetDirection = this.getDirection();</span>
+<span class="fc" id="L122">        Square destination = this.getSquare();</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">        for (int i = 0; i &lt; amountToLookAhead; i++) {</span>
+<span class="fc" id="L124">            destination = destination.getSquareAt(targetDirection);</span>
+        }
+
+<span class="fc" id="L127">        return destination;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

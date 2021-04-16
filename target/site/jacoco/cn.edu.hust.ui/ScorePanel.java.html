@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ScorePanel.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jpacman-framework</a> &gt; <a href="index.source.html" class="el_package">cn.edu.hust.ui</a> &gt; <span class="el_source">ScorePanel.java</span></div><h1>ScorePanel.java</h1><pre class="source lang-java linenums">package cn.edu.hust.ui;
+
+import java.awt.GridLayout;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import cn.edu.hust.level.Player;
+
+/**
+ * A panel consisting of a column for each player, with the numbered players on
+ * top and their respective scores underneath.
+ *
+ * @author Jeroen Roosen 
+ *
+ */
+<span class="pc bpc" id="L20" title="1 of 2 branches missed.">public class ScorePanel extends JPanel {</span>
+
+    /**
+     * Default serialisation ID.
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * The map of players and the labels their scores are on.
+     */
+    private final Map&lt;Player, JLabel&gt; scoreLabels;
+
+    /**
+     * The default way in which the score is shown.
+     */
+<span class="fc" id="L35">    public static final ScoreFormatter DEFAULT_SCORE_FORMATTER =</span>
+<span class="fc" id="L36">        (Player player) -&gt; String.format(&quot;Score: %3d&quot;, player.getScore());</span>
+
+    /**
+     * The way to format the score information.
+     */
+<span class="fc" id="L41">    private ScoreFormatter scoreFormatter = DEFAULT_SCORE_FORMATTER;</span>
+
+    /**
+     * Creates a new score panel with a column for each player.
+     *
+     * @param players
+     *            The players to display the scores of.
+     */
+    public ScorePanel(List&lt;Player&gt; players) {
+<span class="fc" id="L50">        super();</span>
+<span class="pc bpc" id="L51" title="2 of 4 branches missed.">        assert players != null;</span>
+
+<span class="fc" id="L53">        setLayout(new GridLayout(2, players.size()));</span>
+
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        for (int i = 1; i &lt;= players.size(); i++) {</span>
+<span class="fc" id="L56">            add(new JLabel(&quot;Player &quot; + i, JLabel.CENTER));</span>
+        }
+<span class="fc" id="L58">        scoreLabels = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        for (Player player : players) {</span>
+<span class="fc" id="L60">            JLabel scoreLabel = new JLabel(&quot;0&quot;, JLabel.CENTER);</span>
+<span class="fc" id="L61">            scoreLabels.put(player, scoreLabel);</span>
+<span class="fc" id="L62">            add(scoreLabel);</span>
+<span class="fc" id="L63">        }</span>
+<span class="fc" id="L64">    }</span>
+
+    /**
+     * Refreshes the scores of the players.
+     */
+    protected void refresh() {
+<span class="fc bfc" id="L70" title="All 2 branches covered.">        for (Map.Entry&lt;Player, JLabel&gt; entry : scoreLabels.entrySet()) {</span>
+<span class="fc" id="L71">            Player player = entry.getKey();</span>
+<span class="fc" id="L72">            String score = &quot;&quot;;</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">            if (!player.isAlive()) {</span>
+<span class="fc" id="L74">                score = &quot;You died. &quot;;</span>
+            }
+<span class="fc" id="L76">            score += scoreFormatter.format(player);</span>
+<span class="fc" id="L77">            entry.getValue().setText(score);</span>
+<span class="fc" id="L78">        }</span>
+<span class="fc" id="L79">    }</span>
+
+    /**
+     * Provide means to format the score for a given player.
+     */
+    public interface ScoreFormatter {
+
+        /**
+         * Format the score of a given player.
+         * @param player The player and its score
+         * @return Formatted score.
+         */
+        String format(Player player);
+    }
+
+    /**
+     * Let the score panel use a dedicated score formatter.
+     * @param scoreFormatter Score formatter to be used.
+     */
+    public void setScoreFormatter(ScoreFormatter scoreFormatter) {
+<span class="nc bnc" id="L99" title="All 4 branches missed.">        assert scoreFormatter != null;</span>
+<span class="nc" id="L100">        this.scoreFormatter = scoreFormatter;</span>
+<span class="nc" id="L101">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Level.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jpacman-framework</a> &gt; <a href="index.source.html" class="el_package">cn.edu.hust.level</a> &gt; <span class="el_source">Level.java</span></div><h1>Level.java</h1><pre class="source lang-java linenums">package cn.edu.hust.level;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import cn.edu.hust.npc.Ghost;
+import cn.edu.hust.board.Board;
+import cn.edu.hust.board.Direction;
+import cn.edu.hust.board.Square;
+import cn.edu.hust.board.Unit;
+
+/**
+ * A level of Pac-Man. A level consists of the board with the players and the
+ * AIs on it.
+ *
+ * @author Jeroen Roosen 
+ */
+<span class="pc bpc" id="L26" title="1 of 2 branches missed.">@SuppressWarnings(&quot;PMD.TooManyMethods&quot;)</span>
+public class Level {
+
+    /**
+     * The board of this level.
+     */
+    private final Board board;
+
+    /**
+     * The lock that ensures moves are executed sequential.
+     */
+<span class="fc" id="L37">    private final Object moveLock = new Object();</span>
+
+    /**
+     * The lock that ensures starting and stopping can't interfere with each
+     * other.
+     */
+<span class="fc" id="L43">    private final Object startStopLock = new Object();</span>
+
+    /**
+     * The NPCs of this level and, if they are running, their schedules.
+     */
+    private final Map&lt;Ghost, ScheduledExecutorService&gt; npcs;
+
+    /**
+     * &lt;code&gt;true&lt;/code&gt; iff this level is currently in progress, i.e. players
+     * and NPCs can move.
+     */
+    private boolean inProgress;
+
+    /**
+     * The squares from which players can start this game.
+     */
+    private final List&lt;Square&gt; startSquares;
+
+    /**
+     * The start current selected starting square.
+     */
+    private int startSquareIndex;
+
+    /**
+     * The players on this level.
+     */
+    private final List&lt;Player&gt; players;
+
+    /**
+     * The table of possible collisions between units.
+     */
+    private final CollisionMap collisions;
+
+    /**
+     * The objects observing this level.
+     */
+    private final Set&lt;LevelObserver&gt; observers;
+
+    /**
+     * Creates a new level for the board.
+     *
+     * @param board
+     *            The board for the level.
+     * @param ghosts
+     *            The ghosts on the board.
+     * @param startPositions
+     *            The squares on which players start on this board.
+     * @param collisionMap
+     *            The collection of collisions that should be handled.
+     */
+    public Level(Board board, List&lt;Ghost&gt; ghosts, List&lt;Square&gt; startPositions,
+<span class="fc" id="L94">                 CollisionMap collisionMap) {</span>
+<span class="pc bpc" id="L95" title="2 of 4 branches missed.">        assert board != null;</span>
+<span class="pc bpc" id="L96" title="2 of 4 branches missed.">        assert ghosts != null;</span>
+<span class="pc bpc" id="L97" title="2 of 4 branches missed.">        assert startPositions != null;</span>
+
+<span class="fc" id="L99">        this.board = board;</span>
+<span class="fc" id="L100">        this.inProgress = false;</span>
+<span class="fc" id="L101">        this.npcs = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        for (Ghost ghost : ghosts) {</span>
+<span class="fc" id="L103">            npcs.put(ghost, null);</span>
+<span class="fc" id="L104">        }</span>
+<span class="fc" id="L105">        this.startSquares = startPositions;</span>
+<span class="fc" id="L106">        this.startSquareIndex = 0;</span>
+<span class="fc" id="L107">        this.players = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L108">        this.collisions = collisionMap;</span>
+<span class="fc" id="L109">        this.observers = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L110">    }</span>
+
+    /**
+     * Adds an observer that will be notified when the level is won or lost.
+     *
+     * @param observer
+     *            The observer that will be notified.
+     */
+    public void addObserver(LevelObserver observer) {
+<span class="fc" id="L119">        observers.add(observer);</span>
+<span class="fc" id="L120">    }</span>
+
+    /**
+     * Removes an observer if it was listed.
+     *
+     * @param observer
+     *            The observer to be removed.
+     */
+    public void removeObserver(LevelObserver observer) {
+<span class="nc" id="L129">        observers.remove(observer);</span>
+<span class="nc" id="L130">    }</span>
+
+    /**
+     * Registers a player on this level, assigning him to a starting position. A
+     * player can only be registered once, registering a player again will have
+     * no effect.
+     *
+     * @param player
+     *            The player to register.
+     */
+    public void registerPlayer(Player player) {
+<span class="pc bpc" id="L141" title="2 of 4 branches missed.">        assert player != null;</span>
+<span class="pc bpc" id="L142" title="2 of 4 branches missed.">        assert !startSquares.isEmpty();</span>
+
+<span class="fc bfc" id="L144" title="All 2 branches covered.">        if (players.contains(player)) {</span>
+<span class="fc" id="L145">            return;</span>
+        }
+<span class="fc" id="L147">        players.add(player);</span>
+<span class="fc" id="L148">        Square square = startSquares.get(startSquareIndex);</span>
+<span class="fc" id="L149">        player.occupy(square);</span>
+<span class="fc" id="L150">        startSquareIndex++;</span>
+<span class="fc" id="L151">        startSquareIndex %= startSquares.size();</span>
+<span class="fc" id="L152">    }</span>
+
+    /**
+     * Returns the board of this level.
+     *
+     * @return The board of this level.
+     */
+    public Board getBoard() {
+<span class="fc" id="L160">        return board;</span>
+    }
+
+    /**
+     * Moves the unit into the given direction if possible and handles all
+     * collisions.
+     *
+     * @param unit
+     *            The unit to move.
+     * @param direction
+     *            The direction to move the unit in.
+     */
+    public void move(Unit unit, Direction direction) {
+<span class="pc bpc" id="L173" title="2 of 4 branches missed.">        assert unit != null;</span>
+<span class="pc bpc" id="L174" title="2 of 4 branches missed.">        assert direction != null;</span>
+<span class="pc bpc" id="L175" title="2 of 4 branches missed.">        assert unit.hasSquare();</span>
+
+<span class="pc bpc" id="L177" title="1 of 2 branches missed.">        if (!isInProgress()) {</span>
+<span class="nc" id="L178">            return;</span>
+        }
+
+<span class="fc" id="L181">        synchronized (moveLock) {</span>
+<span class="fc" id="L182">            unit.setDirection(direction);</span>
+<span class="fc" id="L183">            Square location = unit.getSquare();</span>
+<span class="fc" id="L184">            Square destination = location.getSquareAt(direction);</span>
+
+<span class="fc bfc" id="L186" title="All 2 branches covered.">            if (destination.isAccessibleTo(unit)) {</span>
+<span class="fc" id="L187">                List&lt;Unit&gt; occupants = destination.getOccupants();</span>
+<span class="fc" id="L188">                unit.occupy(destination);</span>
+<span class="fc bfc" id="L189" title="All 2 branches covered.">                for (Unit occupant : occupants) {</span>
+<span class="fc" id="L190">                    collisions.collide(unit, occupant);</span>
+<span class="fc" id="L191">                }</span>
+            }
+<span class="fc" id="L193">            updateObservers();</span>
+<span class="fc" id="L194">        }</span>
+<span class="fc" id="L195">    }</span>
+
+    /**
+     * Starts or resumes this level, allowing movement and (re)starting the
+     * NPCs.
+     */
+    public void start() {
+<span class="fc" id="L202">        synchronized (startStopLock) {</span>
+<span class="pc bpc" id="L203" title="1 of 2 branches missed.">            if (isInProgress()) {</span>
+<span class="nc" id="L204">                return;</span>
+            }
+<span class="fc" id="L206">            startNPCs();</span>
+<span class="fc" id="L207">            inProgress = true;</span>
+<span class="fc" id="L208">            updateObservers();</span>
+<span class="fc" id="L209">        }</span>
+<span class="fc" id="L210">    }</span>
+
+    /**
+     * Stops or pauses this level, no longer allowing any movement on the board
+     * and stopping all NPCs.
+     */
+    public void stop() {
+<span class="fc" id="L217">        synchronized (startStopLock) {</span>
+<span class="fc bfc" id="L218" title="All 2 branches covered.">            if (!isInProgress()) {</span>
+<span class="fc" id="L219">                return;</span>
+            }
+<span class="fc" id="L221">            stopNPCs();</span>
+<span class="fc" id="L222">            inProgress = false;</span>
+<span class="fc" id="L223">        }</span>
+<span class="fc" id="L224">    }</span>
+
+    /**
+     * Starts all NPC movement scheduling.
+     */
+    private void startNPCs() {
+<span class="fc bfc" id="L230" title="All 2 branches covered.">        for (final Ghost npc : npcs.keySet()) {</span>
+<span class="fc" id="L231">            ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();</span>
+
+<span class="fc" id="L233">            service.schedule(new NpcMoveTask(service, npc),</span>
+<span class="fc" id="L234">                npc.getInterval() / 2, TimeUnit.MILLISECONDS);</span>
+
+<span class="fc" id="L236">            npcs.put(npc, service);</span>
+<span class="fc" id="L237">        }</span>
+<span class="fc" id="L238">    }</span>
+
+    /**
+     * Stops all NPC movement scheduling and interrupts any movements being
+     * executed.
+     */
+    private void stopNPCs() {
+<span class="fc bfc" id="L245" title="All 2 branches covered.">        for (Entry&lt;Ghost, ScheduledExecutorService&gt; entry : npcs.entrySet()) {</span>
+<span class="fc" id="L246">            ScheduledExecutorService schedule = entry.getValue();</span>
+<span class="pc bpc" id="L247" title="2 of 4 branches missed.">            assert schedule != null;</span>
+<span class="fc" id="L248">            schedule.shutdownNow();</span>
+<span class="fc" id="L249">        }</span>
+<span class="fc" id="L250">    }</span>
+
+    /**
+     * Returns whether this level is in progress, i.e. whether moves can be made
+     * on the board.
+     *
+     * @return &lt;code&gt;true&lt;/code&gt; iff this level is in progress.
+     */
+    public boolean isInProgress() {
+<span class="fc" id="L259">        return inProgress;</span>
+    }
+
+    /**
+     * Updates the observers about the state of this level.
+     */
+    private void updateObservers() {
+<span class="fc bfc" id="L266" title="All 2 branches covered.">        if (!isAnyPlayerAlive()) {</span>
+<span class="fc bfc" id="L267" title="All 2 branches covered.">            for (LevelObserver observer : observers) {</span>
+<span class="fc" id="L268">                observer.levelLost();</span>
+<span class="fc" id="L269">            }</span>
+        }
+<span class="fc bfc" id="L271" title="All 2 branches covered.">        if (remainingPellets() == 0) {</span>
+<span class="pc bpc" id="L272" title="1 of 2 branches missed.">            for (LevelObserver observer : observers) {</span>
+<span class="nc" id="L273">                observer.levelWon();</span>
+<span class="nc" id="L274">            }</span>
+        }
+<span class="fc" id="L276">    }</span>
+
+    /**
+     * Returns &lt;code&gt;true&lt;/code&gt; iff at least one of the players in this level
+     * is alive.
+     *
+     * @return &lt;code&gt;true&lt;/code&gt; if at least one of the registered players is
+     *         alive.
+     */
+    public boolean isAnyPlayerAlive() {
+<span class="fc bfc" id="L286" title="All 2 branches covered.">        for (Player player : players) {</span>
+<span class="fc bfc" id="L287" title="All 2 branches covered.">            if (player.isAlive()) {</span>
+<span class="fc" id="L288">                return true;</span>
+            }
+<span class="fc" id="L290">        }</span>
+<span class="fc" id="L291">        return false;</span>
+    }
+
+    /**
+     * Counts the pellets remaining on the board.
+     *
+     * @return The amount of pellets remaining on the board.
+     */
+    public int remainingPellets() {
+<span class="fc" id="L300">        Board board = getBoard();</span>
+<span class="fc" id="L301">        int pellets = 0;</span>
+<span class="fc bfc" id="L302" title="All 2 branches covered.">        for (int x = 0; x &lt; board.getWidth(); x++) {</span>
+<span class="fc bfc" id="L303" title="All 2 branches covered.">            for (int y = 0; y &lt; board.getHeight(); y++) {</span>
+<span class="fc bfc" id="L304" title="All 2 branches covered.">                for (Unit unit : board.squareAt(x, y).getOccupants()) {</span>
+<span class="fc bfc" id="L305" title="All 2 branches covered.">                    if (unit instanceof Pellet) {</span>
+<span class="fc" id="L306">                        pellets++;</span>
+                    }
+<span class="fc" id="L308">                }</span>
+            }
+        }
+<span class="pc bpc" id="L311" title="2 of 4 branches missed.">        assert pellets &gt;= 0;</span>
+<span class="fc" id="L312">        return pellets;</span>
+    }
+
+    /**
+     * A task that moves an NPC and reschedules itself after it finished.
+     *
+     * @author Jeroen Roosen
+     */
+    private final class NpcMoveTask implements Runnable {
+
+        /**
+         * The service executing the task.
+         */
+        private final ScheduledExecutorService service;
+
+        /**
+         * The NPC to move.
+         */
+        private final Ghost npc;
+
+        /**
+         * Creates a new task.
+         *
+         * @param service
+         *            The service that executes the task.
+         * @param npc
+         *            The NPC to move.
+         */
+<span class="fc" id="L340">        NpcMoveTask(ScheduledExecutorService service, Ghost npc) {</span>
+<span class="fc" id="L341">            this.service = service;</span>
+<span class="fc" id="L342">            this.npc = npc;</span>
+<span class="fc" id="L343">        }</span>
+
+        @Override
+        public void run() {
+<span class="fc" id="L347">            Direction nextMove = npc.nextMove();</span>
+<span class="fc bfc" id="L348" title="All 2 branches covered.">            if (nextMove != null) {</span>
+<span class="fc" id="L349">                move(npc, nextMove);</span>
+            }
+<span class="fc" id="L351">            long interval = npc.getInterval();</span>
+<span class="fc" id="L352">            service.schedule(this, interval, TimeUnit.MILLISECONDS);</span>
+<span class="fc" id="L353">        }</span>
+    }
+
+    /**
+     * An observer that will be notified when the level is won or lost.
+     *
+     * @author Jeroen Roosen
+     */
+    public interface LevelObserver {
+
+        /**
+         * The level has been won. Typically the level should be stopped when
+         * this event is received.
+         */
+        void levelWon();
+
+        /**
+         * The level has been lost. Typically the level should be stopped when
+         * this event is received.
+         */
+        void levelLost();
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

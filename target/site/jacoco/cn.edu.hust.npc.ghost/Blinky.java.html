@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Blinky.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jpacman-framework</a> &gt; <a href="index.source.html" class="el_package">cn.edu.hust.npc.ghost</a> &gt; <span class="el_source">Blinky.java</span></div><h1>Blinky.java</h1><pre class="source lang-java linenums">package cn.edu.hust.npc.ghost;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import cn.edu.hust.board.Direction;
+import cn.edu.hust.board.Square;
+import cn.edu.hust.board.Unit;
+import cn.edu.hust.level.Player;
+import cn.edu.hust.npc.Ghost;
+import cn.edu.hust.sprite.Sprite;
+
+/**
+ * &lt;p&gt;
+ * An implementation of the classic Pac-Man ghost Shadow.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * Nickname: Blinky. As his name implies, Shadow is usually a constant shadow on
+ * Pac-Man's tail. When he's not patrolling the top-right corner of the maze,
+ * Shadow tries to find the quickest route to Pac-Man's position. Despite the
+ * fact that Pinky's real name is Speedy, Shadow is actually the fastest of the
+ * ghosts because of when there are only a few pellets left, Blinky drastically
+ * speeds up, which can make him quite deadly. In the original Japanese version,
+ * his name is Oikake/Akabei.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * &lt;b&gt;AI:&lt;/b&gt; When the ghosts are not patrolling in their home corners (Blinky:
+ * top-right, Pinky: top-left, Inky: bottom-right, Clyde: bottom-left), Blinky
+ * will attempt to shorten the distance between Pac-Man and himself. If he has
+ * to choose between shortening the horizontal or vertical distance, he will
+ * choose to shorten whichever is greatest. For example, if Pac-Man is four grid
+ * spaces to the left, and seven grid spaces above Blinky, he'll try to move up
+ * towards Pac-Man before he moves to the left.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * Source: http://strategywiki.org/wiki/Pac-Man/Getting_Started
+ * &lt;/p&gt;
+ *
+ * @author Jeroen Roosen 
+ *
+ */
+<span class="pc bpc" id="L43" title="1 of 2 branches missed.">public class Blinky extends Ghost {</span>
+
+    /**
+     * The variation in intervals, this makes the ghosts look more dynamic and
+     * less predictable.
+     */
+    private static final int INTERVAL_VARIATION = 50;
+
+    /**
+     * The base movement interval.
+     */
+    private static final int MOVE_INTERVAL = 250;
+
+    /**
+     * Creates a new &quot;Blinky&quot;, a.k.a. &quot;Shadow&quot;.
+     *
+     * @param spriteMap
+     *            The sprites for this ghost.
+     */
+    // TODO Blinky should speed up when there are a few pellets left, but he
+    // has no way to find out how many there are.
+    public Blinky(Map&lt;Direction, Sprite&gt; spriteMap) {
+<span class="fc" id="L65">        super(spriteMap, MOVE_INTERVAL, INTERVAL_VARIATION);</span>
+<span class="fc" id="L66">    }</span>
+
+    /**
+     * {@inheritDoc}
+     *
+     * &lt;p&gt;
+     * When the ghosts are not patrolling in their home corners (Blinky:
+     * top-right, Pinky: top-left, Inky: bottom-right, Clyde: bottom-left),
+     * Blinky will attempt to shorten the distance between Pac-Man and himself.
+     * If he has to choose between shortening the horizontal or vertical
+     * distance, he will choose to shorten whichever is greatest. For example,
+     * if Pac-Man is four grid spaces to the left, and seven grid spaces above
+     * Blinky, he'll try to move up towards Pac-Man before he moves to the left.
+     * &lt;/p&gt;
+     */
+    @Override
+    public Optional&lt;Direction&gt; nextAiMove() {
+<span class="pc bpc" id="L83" title="2 of 4 branches missed.">        assert hasSquare();</span>
+
+        // TODO Blinky should patrol his corner every once in a while
+        // TODO Implement his actual behaviour instead of simply chasing.
+<span class="fc" id="L87">        Unit nearest = Navigation.findNearest(Player.class, getSquare());</span>
+<span class="pc bpc" id="L88" title="1 of 2 branches missed.">        if (nearest == null) {</span>
+<span class="nc" id="L89">            return Optional.empty();</span>
+        }
+<span class="pc bpc" id="L91" title="2 of 4 branches missed.">        assert nearest.hasSquare();</span>
+<span class="fc" id="L92">        Square target = nearest.getSquare();</span>
+
+<span class="fc" id="L94">        List&lt;Direction&gt; path = Navigation.shortestPath(getSquare(), target, this);</span>
+<span class="pc bpc" id="L95" title="2 of 4 branches missed.">        if (path != null &amp;&amp; !path.isEmpty()) {</span>
+<span class="fc" id="L96">            return Optional.ofNullable(path.get(0));</span>
+        }
+<span class="nc" id="L98">        return Optional.empty();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

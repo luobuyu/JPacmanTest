@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Direction.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jpacman-framework</a> &gt; <a href="index.source.html" class="el_package">cn.edu.hust.board</a> &gt; <span class="el_source">Direction.java</span></div><h1>Direction.java</h1><pre class="source lang-java linenums">package cn.edu.hust.board;
+
+/**
+ * An enumeration of possible directions on a two-dimensional square grid.
+ *
+ * @author Jeroen Roosen 
+ */
+<span class="fc" id="L8">public enum Direction {</span>
+
+    /**
+     * North, or up.
+     */
+<span class="fc" id="L13">    NORTH(0, -1),</span>
+
+    /**
+     * South, or down.
+     */
+<span class="fc" id="L18">    SOUTH(0, 1),</span>
+
+    /**
+     * West, or left.
+     */
+<span class="fc" id="L23">    WEST(-1, 0),</span>
+
+    /**
+     * East, or right.
+     */
+<span class="fc" id="L28">    EAST(1, 0);</span>
+
+    /**
+     * The delta x (width difference) to an element in the direction in a grid
+     * with 0,0 (x,y) as its top-left element.
+     */
+    private final int deltaX;
+
+    /**
+     * The delta y (height difference) to an element in the direction in a grid
+     * with 0,0 (x,y) as its top-left element.
+     */
+    private final int deltaY;
+
+    /**
+     * Creates a new Direction with the given parameters.
+     *
+     * @param deltaX
+     *            The delta x (width difference) to an element in the direction
+     *            in a matrix with 0,0 (x,y) as its top-left element.
+     * @param deltaY
+     *            The delta y (height difference) to an element in the direction
+     *            in a matrix with 0,0 (x,y) as its top-left element.
+     */
+<span class="fc" id="L52">    Direction(int deltaX, int deltaY) {</span>
+<span class="fc" id="L53">        this.deltaX = deltaX;</span>
+<span class="fc" id="L54">        this.deltaY = deltaY;</span>
+<span class="fc" id="L55">    }</span>
+
+    /**
+     * @return The delta x (width difference) for a single step in this
+     *         direction, in a matrix with 0,0 (x,y) as its top-left element.
+     */
+    public int getDeltaX() {
+<span class="fc" id="L62">        return deltaX;</span>
+    }
+
+    /**
+     * @return The delta y (height difference) for a single step in this
+     *         direction, in a matrix with 0,0 (x,y) as its top-left element.
+     */
+    public int getDeltaY() {
+<span class="fc" id="L70">        return deltaY;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
