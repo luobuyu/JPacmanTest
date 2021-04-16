@@ -2,6 +2,7 @@ package cn.edu.hust.level;
 
 import java.util.Map;
 
+import cn.edu.hust.board.AbstractSquare;
 import cn.edu.hust.sprite.AnimatedSprite;
 import cn.edu.hust.sprite.Sprite;
 import cn.edu.hust.board.Direction;
@@ -73,6 +74,8 @@ public class Player extends AbstractUnit {
         }
         this.alive = isAlive;
     }
+
+
 
     /**
      * Returns the amount of points accumulated by this player.

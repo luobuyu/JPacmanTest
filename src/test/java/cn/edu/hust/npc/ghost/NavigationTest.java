@@ -44,7 +44,7 @@ class NavigationTest {
             sprites)), new BoardFactory(sprites));
     }
 
-    /**
+    /** same
      * Verifies that the path to the same square is empty.
      */
     @Test
@@ -65,8 +65,8 @@ class NavigationTest {
         Board b = parser
             .parseMap(Lists.newArrayList("#####", "# # #", "#####"))
             .getBoard();
-        AbstractSquare s1 = b.squareAt(1, 1);
-        AbstractSquare s2 = b.squareAt(3, 1);
+        AbstractSquare s1 = b.squareAt(1, 1); // first row , first col
+        AbstractSquare s2 = b.squareAt(3, 1); // third col , first row
         List<Direction> path = Navigation
             .shortestPath(s1, s2, mock(AbstractUnit.class));
         assertThat(path).isNull();
