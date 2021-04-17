@@ -12,11 +12,12 @@ import cn.edu.hust.board.AbstractSquare;
 import cn.edu.hust.npc.AbstractGhost;
 
 import com.google.common.collect.Lists;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-// The four suppress warnings ignore the same rule, which results in 4 same string literals
-@SuppressWarnings({"PMD.AvoidDuplicateLiterals", "PMD.TooManyStaticImports"})
+/**
+ * @author ouyangwenzhe
+ */
 class LevelTest {
 
     /**
@@ -61,6 +62,11 @@ class LevelTest {
         when(abstractGhost.getInterval()).thenReturn(defaultInterval);
     }
 
+    @AfterEach
+    void tearDown() {
+        System.out.print("test completed");
+    }
+
     /**
      * Validates the state of the level when it isn't started yet.
      */
@@ -87,15 +93,6 @@ class LevelTest {
         assertThat(level.isInProgress()).isTrue();
     }
 
-    /**
-     * Validates the state of the level when it is started then stopped.
-     */
-    @Test
-    void startStop() {
-        level.start();
-        level.stop();
-        assertThat(level.isInProgress()).isFalse();
-    }
 
     /**
      * Verifies registering a player puts the player on the correct starting

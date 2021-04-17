@@ -38,6 +38,7 @@ public class Pellet extends AbstractUnit {
         return value;
     }
 
+
     @Override
     public Sprite getSprite() {
         return image;
