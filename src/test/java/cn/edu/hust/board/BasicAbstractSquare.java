@@ -2,12 +2,12 @@ package cn.edu.hust.board;
 
 import cn.edu.hust.sprite.Sprite;
 
-class BasicAbstractSquare extends AbstractSquare {
+public class BasicAbstractSquare extends AbstractSquare {
 
     /**
      * Creates a new basic square.
      */
-    BasicAbstractSquare() {
+    public BasicAbstractSquare() {
         super();
     }
 

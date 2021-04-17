@@ -123,7 +123,7 @@ class NavigationTest {
             .parseMap(Lists.newArrayList("#####", "# ..#", "#####"))
             .getBoard();
         AbstractSquare s1 = b.squareAt(1, 1);
-        AbstractSquare s2 = b.squareAt(2, 1);
+        AbstractSquare s2 = b.squareAt(3, 1);
         AbstractSquare result = Navigation.findNearest(Pellet.class, s1).getAbstractSquare();
         assertThat(result).isEqualTo(s2);
     }

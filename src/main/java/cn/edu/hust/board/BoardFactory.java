@@ -42,8 +42,6 @@ public class BoardFactory {
 
         int width = board.getWidth();
         int height = board.getHeight();
-        System.out.println(width);
-        System.out.println(height);
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 AbstractSquare abstractSquare = grid[x][y];
