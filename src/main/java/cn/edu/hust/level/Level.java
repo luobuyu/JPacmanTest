@@ -18,7 +18,7 @@ import cn.edu.hust.board.AbstractUnit;
 /**
  * A level of Pac-Man. A level consists of the board with the players and the
  * AIs on it.
-
+ * @author ouyangwenzhe
  */
 @SuppressWarnings("ALL")
 public class Level {

@@ -5,7 +5,7 @@ import cn.edu.hust.board.AbstractUnit;
 /**
  * A table containing all (relevant) collisions between different types of
  * units.
- * @author hewang
+ * @author ouyangwenzhe
 
  */
 public interface CollisionMap {

@@ -7,7 +7,9 @@ import java.util.Map;
 
 import cn.edu.hust.board.AbstractUnit;
 
-
+/**
+ * @author ouyangwenzhe
+ */
 @SuppressWarnings({"ALL", "AlibabaCollectionInitShouldAssignCapacity"})
 public class CollisionInteractionMap implements CollisionMap {
 
