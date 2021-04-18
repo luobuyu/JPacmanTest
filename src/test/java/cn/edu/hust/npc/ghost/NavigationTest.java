@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Objects;
 
 import cn.edu.hust.level.LevelFactory;
 import cn.edu.hust.level.MapParser;
@@ -123,8 +124,8 @@ class NavigationTest {
             .parseMap(Lists.newArrayList("#####", "# ..#", "#####"))
             .getBoard();
         AbstractSquare s1 = b.squareAt(1, 1);
-        AbstractSquare s2 = b.squareAt(3, 1);
-        AbstractSquare result = Navigation.findNearest(Pellet.class, s1).getAbstractSquare();
+        AbstractSquare s2 = b.squareAt(2, 1);
+        AbstractSquare result = Objects.requireNonNull(Navigation.findNearest(Pellet.class, s1)).getAbstractSquare();
         assertThat(result).isEqualTo(s2);
     }
 

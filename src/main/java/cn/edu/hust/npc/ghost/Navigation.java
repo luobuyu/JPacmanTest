@@ -118,18 +118,18 @@ public final class Navigation {
      *
      * @return the first unit found of type clazz, or null.
      */
-    public static <T extends AbstractUnit> T findUnitInBoard(Class<T> clazz, Board board) {
-        for (int y = 0; y < board.getHeight(); y++) {
-            for (int x = 0; x < board.getWidth(); x++) {
-                final T ghost = Navigation.findUnit(clazz, board.squareAt(x, y));
-                if (ghost != null) {
-                    return ghost;
-                }
-            }
-        }
-
-        return null;
-    }
+//    public static <T extends AbstractUnit> T findUnitInBoard(Class<T> clazz, Board board) {
+//        for (int y = 0; y < board.getHeight(); y++) {
+//            for (int x = 0; x < board.getWidth(); x++) {
+//                final T ghost = Navigation.findUnit(clazz, board.squareAt(x, y));
+//                if (ghost != null) {
+//                    return ghost;
+//                }
+//            }
+//        }
+//
+//        return null;
+//    }
 
     /**
      * Determines whether a square has an occupant of a certain type.
