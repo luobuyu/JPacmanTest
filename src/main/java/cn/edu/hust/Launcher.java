@@ -42,6 +42,7 @@ public class Launcher {
         return abstractGame;
     }
 
+
     /**
      * The map file used to populate the level.
      *

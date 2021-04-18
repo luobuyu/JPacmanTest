@@ -6,7 +6,7 @@ import cn.edu.hust.board.AbstractUnit;
 
 
 /**
- * @author xurenjie
+ * @author ouyangwenzhe
  */
 public class PlayerCollisions implements CollisionMap {
 

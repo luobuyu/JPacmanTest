@@ -14,6 +14,7 @@ import cn.edu.hust.sprite.Sprite;
 
 
 /**
+ * lazy, stay away from pac man
  * @author hewang
  */
 public class Clyde extends AbstractGhost {

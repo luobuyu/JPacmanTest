@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Objects;
 
 import cn.edu.hust.level.LevelFactory;
 import cn.edu.hust.level.MapParser;
@@ -23,6 +24,9 @@ import com.google.common.collect.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * @author zhangxu
+ */
 @SuppressWarnings({"magicnumber", "PMD.AvoidDuplicateLiterals"})
 class NavigationTest {
 
@@ -41,7 +45,7 @@ class NavigationTest {
             sprites)), new BoardFactory(sprites));
     }
 
-    /**
+    /** same
      * Verifies that the path to the same square is empty.
      */
     @Test
@@ -62,8 +66,8 @@ class NavigationTest {
         Board b = parser
             .parseMap(Lists.newArrayList("#####", "# # #", "#####"))
             .getBoard();
-        AbstractSquare s1 = b.squareAt(1, 1);
-        AbstractSquare s2 = b.squareAt(3, 1);
+        AbstractSquare s1 = b.squareAt(1, 1); // first row , first col
+        AbstractSquare s2 = b.squareAt(3, 1); // third col , first row
         List<Direction> path = Navigation
             .shortestPath(s1, s2, mock(AbstractUnit.class));
         assertThat(path).isNull();
@@ -121,7 +125,7 @@ class NavigationTest {
             .getBoard();
         AbstractSquare s1 = b.squareAt(1, 1);
         AbstractSquare s2 = b.squareAt(2, 1);
-        AbstractSquare result = Navigation.findNearest(Pellet.class, s1).getAbstractSquare();
+        AbstractSquare result = Objects.requireNonNull(Navigation.findNearest(Pellet.class, s1)).getAbstractSquare();
         assertThat(result).isEqualTo(s2);
     }
 

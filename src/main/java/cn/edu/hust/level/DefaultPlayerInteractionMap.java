@@ -4,7 +4,7 @@ import cn.edu.hust.npc.AbstractGhost;
 import cn.edu.hust.board.AbstractUnit;
 
 /**
- * @author hewang
+ * @author ouyangwenzhe
  */
 public class DefaultPlayerInteractionMap implements CollisionMap {
 
