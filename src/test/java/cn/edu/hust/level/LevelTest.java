@@ -93,8 +93,42 @@ class LevelTest {
     @Test
     void startStop() {
         level.start();
+        assertThat(level.isInProgress()).isTrue();
         level.stop();
         assertThat(level.isInProgress()).isFalse();
+    }
+
+    /**
+     * Validates the state of the level when it is stopped then stopped.
+     */
+    @Test
+    void stopStop() {
+        level.stop();
+        assertThat(level.isInProgress()).isFalse();
+        level.stop();
+        assertThat(level.isInProgress()).isFalse();
+    }
+
+    /**
+     * Validates the state of the level when it is stopped then started.
+     */
+    @Test
+    void stopStart() {
+        level.stop();
+        assertThat(level.isInProgress()).isFalse();
+        level.start();
+        assertThat(level.isInProgress()).isTrue();
+    }
+
+    /**
+     * Validates the state of the level when it is started then started.
+     */
+    @Test
+    void startStart() {
+        level.start();
+        assertThat(level.isInProgress()).isTrue();
+        level.start();
+        assertThat(level.isInProgress()).isTrue();
     }
 
     /**
