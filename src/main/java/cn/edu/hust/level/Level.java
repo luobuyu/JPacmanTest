@@ -230,7 +230,7 @@ public class Level {
             @SuppressWarnings("AlibabaThreadPoolCreation") ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
 //构造一个线程池
             ThreadPoolExecutor threadPool = new ThreadPoolExecutor(
-                    1,1,10,TimeUnit.SECONDS,
+                    1, 1, 10, TimeUnit.SECONDS,
                     new ArrayBlockingQueue<Runnable>(1),
                     new ThreadPoolExecutor.DiscardOldestPolicy());
             threadPool.execute(() -> {
@@ -240,13 +240,12 @@ public class Level {
                     npcs.put(npc, service);
                 } catch (Exception e) {
                     e.printStackTrace();
-                }finally{
+                } finally {
                     threadPool.shutdown();// 关闭线程池
                 }
             });
-
-
         }
+
     }
 
     /**

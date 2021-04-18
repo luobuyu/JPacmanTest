@@ -85,22 +85,6 @@ class BoardFactoryTest {
         assertThat(s2.getSquareAt(Direction.WEST)).isEqualTo(s1);
     }
 
-    @Test
-    void testMove() {
-        Board b = parser
-                .parseMap(Lists.newArrayList("#####", "#   #", "#####"))
-                .getBoard();
-        AbstractSquare s1 = b.squareAt(1, 1); // first row , first col
-        AbstractSquare s2 = s1.getSquareAt(Direction.EAST); // third col , first row
-        Player pacMan = playerFactory.createPacMan();
-        pacMan.occupy(s1);
-        launcher.getAbstractGame().move(pacMan, Direction.EAST);
-        assertThat(pacMan.getAbstractSquare()).isEqualTo(s2);
-//        List<Direction> path = Navigation
-//                .shortestPath(s1, s2, mock(AbstractUnit.class));
-//        assertThat(path).isNull();
-    }
-
     /**
      * Verifies a chain of cells is connected to the north.
      */
