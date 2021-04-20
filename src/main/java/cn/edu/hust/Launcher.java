@@ -52,17 +52,6 @@ public class Launcher {
         return levelMap;
     }
 
-    /**
-     * Set the name of the file containing this level's map.
-     *
-     * @param fileName
-     *            Map to be used.
-     * @return Level corresponding to the given map.
-     */
-    public Launcher withMapFile(String fileName) {
-        levelMap = fileName;
-        return this;
-    }
 
     /**
      * Creates a new game using the level from {@link #makeLevel()}.

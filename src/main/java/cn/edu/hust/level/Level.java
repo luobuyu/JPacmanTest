@@ -255,8 +255,8 @@ public class Level {
     private void stopNPCs() {
         for (Entry<AbstractGhost, ScheduledExecutorService> entry : npcs.entrySet()) {
             ScheduledExecutorService schedule = entry.getValue();
-            assert schedule != null;
-            schedule.shutdownNow();
+            if(schedule != null)
+                schedule.shutdownNow();
         }
     }
 
@@ -273,7 +273,7 @@ public class Level {
     /**
      * Updates the observers about the state of this level.
      */
-    private void updateObservers() {
+    public void updateObservers() {
         if (!isAnyPlayerAlive()) {
             for (LevelObserver observer : observers) {
                 observer.levelLost();

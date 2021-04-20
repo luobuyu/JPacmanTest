@@ -59,8 +59,7 @@ public class Blinky extends AbstractGhost {
     @Override
     public Optional<Direction> nextAiMove() {
         assert hasSquare();
-        // TODO Blinky should patrol his corner every once in a while
-        // TODO Implement his actual behaviour instead of simply chasing.
+
         AbstractUnit nearest = Navigation.findNearest(Player.class, getAbstractSquare());
         if (nearest == null) {
             return Optional.empty();

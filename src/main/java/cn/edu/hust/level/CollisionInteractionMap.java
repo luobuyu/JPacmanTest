@@ -163,7 +163,6 @@ public class CollisionInteractionMap implements CollisionMap {
      *            for.
      * @return A list of all classes and interfaces the class inherits.
      */
-    @SuppressWarnings("unchecked")
     private List<Class<? extends AbstractUnit>> getInheritance(
         Class<? extends AbstractUnit> clazz) {
         List<Class<? extends AbstractUnit>> found = new ArrayList<>();

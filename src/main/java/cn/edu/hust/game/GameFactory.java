@@ -40,7 +40,7 @@ public class GameFactory {
      *
      * @return The player factory associated with this game factory.
      */
-    protected PlayerFactory getPlayerFactory() {
-        return playerFactory;
-    }
+//    protected PlayerFactory getPlayerFactory() {
+//        return playerFactory;
+//    }
 }

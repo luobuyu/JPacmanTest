@@ -82,7 +82,7 @@ class BlinkyTest {
      * when can move，blinky will chase pacman
      */
     @ParameterizedTest
-    @MethodSource("provider")
+    @MethodSource("providerTrue")
     void nextAiMoveTrue(AbstractSquare s1, AbstractSquare s2, Direction x) {
         AbstractGhost blinky = ghostFactory.createBlinky();
         Player player = playerFactory.createPacMan();
@@ -90,37 +90,50 @@ class BlinkyTest {
         blinky.occupy(s1);
         assertThat(blinky.nextAiMove()).isEqualTo(Optional.of(Direction.valueOf(x.name())));
     }
-
-    static Stream<Arguments> provider() throws IOException{
-
+    // 测试正常情况，起点终点都存在，且可达
+    static Stream<Arguments> providerTrue() throws IOException{
         PacManSprites sprites = new PacManSprites();
         parser = new MapParser(new LevelFactory(sprites, new GhostFactory(
                 sprites)), new BoardFactory(sprites));
         b = parser.parseMap("/board.txt").getBoard();
 
         return Stream.of(
-                // up
+                // 上边界
                 Arguments.of(b.squareAt(8, 13), b.squareAt(19, 1), Direction.NORTH),
-                // left
+                // 左边界
                 Arguments.of(b.squareAt(8, 13), b.squareAt(3, 3), Direction.NORTH),
-                // right
+                // 右边界
                 Arguments.of(b.squareAt(8, 13), b.squareAt(21, 15), Direction.NORTH),
-                // down
+                // 下边界
                 Arguments.of(b.squareAt(8, 13), b.squareAt(3, 19), Direction.WEST)
         );
     }
 
-    @Test
-    void nextAiMoveNull() {
-        Board b = parser
-                .parseMap(Lists.newArrayList("#####", "# # #", "#####"))
-                .getBoard();
-        AbstractSquare s1 = b.squareAt(1, 1); // first row , first col
-        AbstractSquare s2 = b.squareAt(3, 1); // third col , first row
+    @ParameterizedTest
+    @MethodSource("providerFalse")
+    void nextAiMoveNull(int x1, int y1, int x2, int y2, Object x) {
         AbstractGhost blinky = ghostFactory.createBlinky();
         Player player = playerFactory.createPacMan();
-        player.occupy(s2);
+        if(x2 != -1) {
+            s2 = b.squareAt(x2, y2);
+            player.occupy(s2);
+        }
+        s1 = b.squareAt(x1, y1);
         blinky.occupy(s1);
-        assertThat(blinky.nextAiMove()).isEqualTo(Optional.empty());
+        assertThat(blinky.nextAiMove()).isEqualTo(x);
+    }
+    static Stream<Arguments> providerFalse() throws IOException{
+        PacManSprites sprites = new PacManSprites();
+        parser = new MapParser(new LevelFactory(sprites, new GhostFactory(
+                sprites)), new BoardFactory(sprites));
+        b = parser
+                .parseMap(Lists.newArrayList("#####", "# # #", "#####"))
+                .getBoard();
+        return Stream.of(
+                // 起点到终点不可达
+                Arguments.of(1, 1, 3, 1, Optional.empty()),
+                // 终点不存在
+                Arguments.of(1, 1, -1, -1, Optional.empty())
+        );
     }
 }

@@ -9,6 +9,9 @@ import cn.edu.hust.board.*;
 import cn.edu.hust.npc.ghost.GhostFactory;
 
 import java.io.IOException;
+import java.sql.Time;
+import java.util.Timer;
+
 import cn.edu.hust.level.LevelFactory;
 import cn.edu.hust.level.MapParser;
 import cn.edu.hust.level.Player;
@@ -251,6 +254,24 @@ public class SpriteTest {
         pacMan.occupy(s1);
         launcher.getAbstractGame().move(pacMan, Direction.SOUTH);
         assertThat(pacMan.getAbstractSquare()).isEqualTo(s2);
+    }
+
+    @Test
+    void testKeySpeed() {
+        Board b = parser
+                .parseMap(Lists.newArrayList("###############", "#             #", "###############"))
+                .getBoard();
+        AbstractSquare s1 = b.squareAt(1, 1); // first row , first col
+        AbstractSquare s2 = b.squareAt(1, 1); // third col , first row
+        Player pacMan = playerFactory.createPacMan();
+        pacMan.occupy(s1);
+        long extra = 20;
+
+        launcher.getAbstractGame().move(pacMan, Direction.SOUTH);
+        long firstTime = System.currentTimeMillis();
+        launcher.getAbstractGame().move(pacMan, Direction.SOUTH);
+        long secondTime = System.currentTimeMillis();
+        assertThat(secondTime - firstTime).isGreaterThan(extra);
     }
 
 }

@@ -111,24 +111,6 @@ public class PacManUiBuilder {
     }
 
     /**
-     * Adds a button to the UI.
-     *
-     * @param caption
-     *            The caption of the button.
-     * @param action
-     *            The action to execute when the button is clicked.
-     * @return The builder.
-     */
-    public PacManUiBuilder addButton(String caption, Action action) {
-        assert caption != null;
-        assert !caption.isEmpty();
-        assert action != null;
-
-        buttons.put(caption, action);
-        return this;
-    }
-
-    /**
      * Adds a start and stop button to the UI. The actual actions for these
      * buttons will be added upon building the UI.
      *
@@ -149,8 +131,8 @@ public class PacManUiBuilder {
      *
      * @return The builder.
      */
-    public PacManUiBuilder withScoreFormatter(ScorePanel.ScoreFormatter scoreFormatter) {
-        this.scoreFormatter = scoreFormatter;
-        return this;
-    }
+//    public PacManUiBuilder withScoreFormatter(ScorePanel.ScoreFormatter scoreFormatter) {
+//        this.scoreFormatter = scoreFormatter;
+//        return this;
+//    }
 }

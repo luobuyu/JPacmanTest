@@ -1,16 +1,17 @@
 package cn.edu.hust.level;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
+import cn.edu.hust.Launcher;
 import cn.edu.hust.board.Board;
 import cn.edu.hust.board.AbstractSquare;
+import cn.edu.hust.game.AbstractGame;
+import cn.edu.hust.game.GameFactory;
+import cn.edu.hust.game.SinglePlayerAbstractGame;
 import cn.edu.hust.npc.AbstractGhost;
 
+import cn.edu.hust.sprite.PacManSprites;
 import com.google.common.collect.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,7 +57,7 @@ class LevelTest {
     @BeforeEach
     void setUp() {
         final long defaultInterval = 100L;
-        level = new Level(board, Lists.newArrayList(abstractGhost), Lists.newArrayList(
+        level = new Level(board, Lists.newArrayList(abstractGhost, abstractGhost, abstractGhost), Lists.newArrayList(
                 abstractSquare1, abstractSquare2), collisions);
         when(abstractGhost.getInterval()).thenReturn(defaultInterval);
     }
@@ -183,5 +184,17 @@ class LevelTest {
         level.registerPlayer(p2);
         level.registerPlayer(p3);
         verify(p3).occupy(abstractSquare1);
+    }
+
+    @Test
+    void TestReStart() {
+        Launcher launcher = new Launcher();
+        launcher.launch();
+        AbstractGame game = launcher.getAbstractGame();
+        game.start();
+        assertThat(game.isInProgress()).isEqualTo(true);
+        game.levelLost();
+        game.start();  // restart
+        assertThat(level.isInProgress()).isEqualTo(true);
     }
 }
